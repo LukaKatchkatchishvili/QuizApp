@@ -3,6 +3,12 @@ import Question from "@/models/question";
 import { NextResponse } from "next/server";
 
 export async function POST(req, res) {
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://quiz-app-blush-ten.vercel.app"
+  );
+  res.setHeader("Access-Control-Allow-Methods", "POST");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   try {
     const requestData = await req.json();
     await connectMongoDB();
