@@ -1,43 +1,38 @@
-// pages/api/upload.js
-
 import connectMongoDB from "@/libs/mongodb";
 import Question from "@/models/question";
 import { NextResponse } from "next/server";
+import Cors from "cors";
 
-export async function POST(req, res) {
-  try {
-    const requestData = await req.json();
-    await connectMongoDB();
-    await Question.create({ ...requestData });
-    console.log("Topic Created");
+const cors = Cors({
+  origin: "https://quiz-app-blush-ten.vercel.app",
+  methods: ["POST", "GET"],
+  allowedHeaders: ["Content-Type"],
+});
 
-    res.setHeader(
-      "Access-Control-Allow-Origin",
-      "https://quiz-app-blush-ten.vercel.app"
-    );
-    res.setHeader("Access-Control-Allow-Methods", "POST");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+export default async function handler(req, res) {
+  await cors(req, res);
 
-    return NextResponse.json({ message: "Topic Created" });
-  } catch (error) {
-    console.error("Error creating topic:", error);
-    return NextResponse.error(new Error("Failed to create topic"));
-  }
-}
-
-export async function GET() {
-  try {
-    await connectMongoDB();
-    const Questions = await Question.find();
-
-    res.setHeader(
-      "Access-Control-Allow-Origin",
-      "https://quiz-app-blush-ten.vercel.app"
-    );
-
-    return NextResponse.json({ Questions });
-  } catch (error) {
-    console.error("Error loading topics:", error);
-    return NextResponse.error(new Error("Failed to load topics"));
+  if (req.method === "POST") {
+    try {
+      const requestData = await req.json();
+      await connectMongoDB();
+      await Question.create({ ...requestData });
+      console.log("Topic Created");
+      return NextResponse.json({ message: "Topic Created" });
+    } catch (error) {
+      console.error("Error creating topic:", error);
+      return NextResponse.error(new Error("Failed to create topic"));
+    }
+  } else if (req.method === "GET") {
+    try {
+      await connectMongoDB();
+      const Questions = await Question.find();
+      return NextResponse.json({ Questions });
+    } catch (error) {
+      console.error("Error loading topics:", error);
+      return NextResponse.error(new Error("Failed to load topics"));
+    }
+  } else {
+    res.status(405).end();
   }
 }
