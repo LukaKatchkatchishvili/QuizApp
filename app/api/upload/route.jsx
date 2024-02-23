@@ -10,6 +10,14 @@ const cors = Cors({
 });
 
 export default async function handler(req, res) {
+  if (req.method === "OPTIONS") {
+    // Handle CORS preflight request
+    await cors(req, res);
+    res.end();
+    return;
+  }
+
+  // Handle other HTTP methods
   await cors(req, res);
 
   if (req.method === "POST") {

@@ -6,10 +6,13 @@ const useGetData = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/upload", {
+        const res = await fetch("192.168.100.8:3000/api/upload", {
           method: "GET",
           cache: "no-store",
         });
+        if (!res.ok) {
+          throw new Error("Failed to fetch data");
+        }
         const data = await res.json();
         setDataInfo(data.Questions || []);
       } catch (error) {
