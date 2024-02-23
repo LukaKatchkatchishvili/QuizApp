@@ -6,7 +6,7 @@ const useGetData = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("api/upload", {
+        const res = await fetch("http://localhost:3000/api/upload", {
           method: "GET",
           cache: "no-store",
         });
